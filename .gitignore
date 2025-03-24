@@ -1,0 +1,13 @@
+.vs/
+.svn/
+.git/
+.vsconfig
+
+Binaries/
+Build/
+Intermediate/
+Saved/
+WindowsNoEditor/
+DerivedDataCache/
+
+*.sln
