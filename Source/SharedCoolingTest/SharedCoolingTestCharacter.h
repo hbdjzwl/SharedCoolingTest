@@ -54,7 +54,7 @@ private:
 public:
 	ASharedCoolingTestCharacter();
 	
-
+	virtual void BeginPlay() override;
 protected:
 
 	/** Called for movement input */

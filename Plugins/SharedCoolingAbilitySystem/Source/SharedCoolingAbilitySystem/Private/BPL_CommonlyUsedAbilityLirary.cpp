@@ -21,31 +21,33 @@ FString UBPL_CommonlyUsedAbilityLirary::Conv_GameplayAbilitySpecHandleToString(c
 
 FGameplayAbilitySpecHandle UBPL_CommonlyUsedAbilityLirary::K2_GiveAbility(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> InAbilityClass, int32 Level, int32 InputID /*= -1 */)
 {
-	return AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(InAbilityClass, Level, InputID));
-
+	if (AbilitySystemComponent && InAbilityClass.Get())
+	{
+		return AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(InAbilityClass, Level, InputID));
+	}
+	return FGameplayAbilitySpecHandle();
 }
 
 bool UBPL_CommonlyUsedAbilityLirary::TryActivateAbilityByHandle(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAbilitySpecHandle& AbilityToActivate, bool bAllowRemoteActivation /*= true*/)
 {
-	return AbilitySystemComponent->TryActivateAbility(AbilityToActivate, bAllowRemoteActivation);
-
+	if (AbilitySystemComponent && AbilityToActivate.IsValid())
+	{
+		return AbilitySystemComponent->TryActivateAbility(AbilityToActivate, bAllowRemoteActivation);
+	}
+	return false;
 }
 
 void UBPL_CommonlyUsedAbilityLirary::K2_ClearAbility(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAbilitySpecHandle& Handle, bool InRemoveAbilityOnEnd)
 {
-	if (InRemoveAbilityOnEnd)
+	if (AbilitySystemComponent && Handle.IsValid())
 	{
-		AbilitySystemComponent->SetRemoveAbilityOnEnd(Handle);
-	}
-	else
-	{
-		AbilitySystemComponent->ClearAbility(Handle);
+		InRemoveAbilityOnEnd ? AbilitySystemComponent->SetRemoveAbilityOnEnd(Handle) : AbilitySystemComponent->ClearAbility(Handle);
 	}
 }
 
 void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByClass(UAbilitySystemComponent* AbilitySystemComponent, const TSubclassOf<UGameplayEffect> QueryGE, float ModifiedIncrement)
 {
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent && QueryGE.Get())
 	{
 		FGameplayEffectQuery Querys;
 		Querys.EffectDefinition = QueryGE;
@@ -64,7 +66,6 @@ void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByHandle(U
 	{
 		if (const FActiveGameplayEffect* Effect = AbilitySystemComponent->GetActiveGameplayEffect(AGEHandle))
 		{
-			//ÐÞÕýÊ±¼ä
 			if ((Effect->GetEndTime() + ModifiedIncrement) < AbilitySystemComponent->GetWorld()->GetTimeSeconds())
 			{
 				ModifiedIncrement = AbilitySystemComponent->GetWorld()->GetTimeSeconds() - Effect->GetEndTime() + 0.1f;
@@ -88,17 +89,24 @@ void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByTags(UAb
 
 float UBPL_CommonlyUsedAbilityLirary::GetGameplayEffectDuration(UAbilitySystemComponent* AbilitySystemComponent, const FActiveGameplayEffectHandle& Handle)
 {
-	return AbilitySystemComponent->GetGameplayEffectDuration(Handle);
+	if (AbilitySystemComponent && Handle.IsValid())
+	{
+		return AbilitySystemComponent->GetGameplayEffectDuration(Handle);
+	}
+	return 0.f;
 }
 
 void UBPL_CommonlyUsedAbilityLirary::GetGameplayEffectStartTimeAndDuration(UAbilitySystemComponent* AbilitySystemComponent, const FActiveGameplayEffectHandle& Handle, float& StartEffectTime, float& Duration)
 {
-	AbilitySystemComponent->GetGameplayEffectStartTimeAndDuration(Handle, StartEffectTime, Duration);
+	if (AbilitySystemComponent && Handle.IsValid())
+	{
+		AbilitySystemComponent->GetGameplayEffectStartTimeAndDuration(Handle, StartEffectTime, Duration);
+	}
 }
 
 void UBPL_CommonlyUsedAbilityLirary::GetAbilityCooldownTimeRemainingAndDurationByHandle(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAbilitySpecHandle& Handle, float& TimeRemaining, float& CooldownDuration)
 {
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent && Handle.IsValid())
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromHandle(Handle))
 		{
@@ -113,13 +121,16 @@ void UBPL_CommonlyUsedAbilityLirary::GetAbilityCooldownTimeRemainingAndDurationB
 
 void UBPL_CommonlyUsedAbilityLirary::GetAbilityCooldownTimeRemainingAndDurationByAbility(UAbilitySystemComponent* AbilitySystemComponent, UGameplayAbility* Ability, float& TimeRemaining, float& CooldownDuration)
 {
-	const FGameplayAbilityActorInfo& AbilityActorInfo = Ability->GetActorInfo();
-	Ability->GetCooldownTimeRemainingAndDuration(Ability->GetCurrentAbilitySpecHandle(), &AbilityActorInfo, TimeRemaining, CooldownDuration);
+	if (AbilitySystemComponent && Ability)
+	{
+		const FGameplayAbilityActorInfo& AbilityActorInfo = Ability->GetActorInfo();
+		Ability->GetCooldownTimeRemainingAndDuration(Ability->GetCurrentAbilitySpecHandle(), &AbilityActorInfo, TimeRemaining, CooldownDuration);
+	}
 }
 
 UGameplayAbility* UBPL_CommonlyUsedAbilityLirary::GetPrimaryAbilityInstanceFromClass(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> InAbilityClass)
 {
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent && InAbilityClass.Get())
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(InAbilityClass))
 		{
@@ -131,7 +142,7 @@ UGameplayAbility* UBPL_CommonlyUsedAbilityLirary::GetPrimaryAbilityInstanceFromC
 
 UGameplayAbility* UBPL_CommonlyUsedAbilityLirary::GetPrimaryAbilityInstanceFromHandle(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAbilitySpecHandle& Handle)
 {
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent && Handle.IsValid())
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromHandle(Handle))
 		{

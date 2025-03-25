@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Interface/SharedCoolingSystemInterface.h"
-//#include "Ability/GA_SharedCoolingBase.h"
+#include "Ability/GA_SharedCoolingBase.h"
 #include "AbilitySystemComponent.h"
 
 
@@ -36,8 +36,8 @@ void ISharedCoolingSystemInterface::NotifyAllSharedAbilityRefreshCoolTime(FGamep
 			{
 				check(Cast<UAbilitySystemComponent>(this) && "It must be inherited from the UAbilitySystemComponent class.");
 				FGameplayAbilitySpec* Spec = (Cast<UAbilitySystemComponent>(this))->FindAbilitySpecFromHandle(Handle);
-				//UGA_SharedCoolingBase* GA = Cast<UGA_SharedCoolingBase>(Spec->GetPrimaryInstance());
-				//GA->RefreshSharedCoolAbilityTime(InstigatorHandle);
+				UGA_SharedCoolingBase* GA = Cast<UGA_SharedCoolingBase>(Spec->GetPrimaryInstance());
+				GA->RefreshSharedCoolAbilityTime(InstigatorHandle);
 			}
 		}
  	}

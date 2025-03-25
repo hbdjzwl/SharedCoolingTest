@@ -64,6 +64,12 @@ ASharedCoolingTestCharacter::ASharedCoolingTestCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void ASharedCoolingTestCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
