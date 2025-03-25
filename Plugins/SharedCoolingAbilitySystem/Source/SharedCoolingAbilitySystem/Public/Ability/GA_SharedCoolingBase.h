@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "Interface/SharedCoolingSystemInterface.h"
+#include "DataType/SharedCoolingDataType.h"
 #include "GA_SharedCoolingBase.generated.h"
 
 
@@ -21,9 +22,7 @@ public:
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	virtual void ApplySharedCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
-protected:
-// 	UPROPERTY(VisibleAnywhere,  UPROPERTY(meta = (DisplayName = "Child Property", Category = "Advanced")),Category = Advanced)
-// 	TEnumAsByte<EGameplayAbilityInstancingPolicy::Type>	InstancingPolicy;
+
 private:
 
 	/* enable the function of configuring shared cooling.*/
@@ -42,20 +41,24 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "SharedCooling", meta = (AllowPrivateAccess = "true",EditCondition = "bEnableSharedCooling"))
 	bool bSelfActivateDontSharedCoolDefaultConfig;	
 
+	/* Notification policy for cooling events.*/
+	UPROPERTY(EditDefaultsOnly, Category = "SharedCooling", meta = (AllowPrivateAccess = "true",EditCondition = "bEnableSharedCooling"))
+	EEventNotifyPlicy EventNotifyPlicy;
 
 	mutable bool bSelfDontSharedCoolRuningSwitch;
 	mutable FActiveGameplayEffectHandle MaxRemainingCoolTimeAGEHandle;
 	mutable FDelegateHandle MaxRemainingCoolTime_RemoveDelegate;
 	FGameplayTagContainer ValidSharedCoolingTag;
 
+	
+	void ExecCoolingUpdateNotifyEvent(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration)const;
+	void SendCoolingUpdateNotifyEvent(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration)const;
 	UFUNCTION(Client, Reliable)
-	void Client_UpdateCoolingWidget(FGameplayTag StatusTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration)const;
+	void Client_SendCoolingUpdateNotifyEvent(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration)const;
 	void RegisterCoolTimeGERemoveCallback() const;
 	void RefreshSharedCoolAbilityTime(FGameplayAbilitySpecHandle InstigatorHandle = FGameplayAbilitySpecHandle());
 	FActiveGameplayEffectHandle GetCurrentCooldownTimeActiveGameplayEffectHandle() const;
-
 	FGameplayTag GetCurrentCoolingAssetTagByAGEHandle(const FActiveGameplayEffectHandle& ActiveGameplayEffectHandle) const;
-
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "SharedCooling")
 	void GetCooldownTimeRemainingAndDurationAndTag(FGameplayTag& CoolingAssetTag,float& TimeRemaining, float& CooldownDuration) const;
 };

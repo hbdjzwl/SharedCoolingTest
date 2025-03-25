@@ -3,7 +3,6 @@
 
 #include "Ability/GA_SharedCoolingBase.h"
 #include "Interface/SharedCoolingSystemInterface.h"
-#include "DataType/SharedCoolingDataType.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect/GE_SharedCooling.h"
 
@@ -12,6 +11,7 @@ UGA_SharedCoolingBase::UGA_SharedCoolingBase()
 	//Currently, only InstancedPerActor is supported for SharedCooling
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	ReplicationPolicy = EGameplayAbilityReplicationPolicy::ReplicateYes;
+	EventNotifyPlicy = EEventNotifyPlicy::OnlyClient;
 }
 
 void UGA_SharedCoolingBase::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -95,7 +95,7 @@ void UGA_SharedCoolingBase::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 				DefaultCool_Remove->AddWeakLambda(const_cast<UGA_SharedCoolingBase*>(this),[&, DefaultCoolHandle](const FGameplayEffectRemovalInfo& InGameplayEffectRemovalInfo)
 					{
 						//notify client widget cooldown end.
-						Client_UpdateCoolingWidget(TAG_EVENT_COOLING_END, GetCurrentCoolingAssetTagByAGEHandle(DefaultCoolHandle), 0.f, 0.f);
+						ExecCoolingUpdateNotifyEvent(TAG_EVENT_COOLING_END, GetCurrentCoolingAssetTagByAGEHandle(DefaultCoolHandle), 0.f, 0.f);
 					});
 			}
 
@@ -104,7 +104,7 @@ void UGA_SharedCoolingBase::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 			GetCooldownTimeRemainingAndDuration(Handle, ActorInfo, Remaining, Duration);
 			if (Duration > 0.f && Remaining > 0.f)
 			{
-				Client_UpdateCoolingWidget(TAG_EVENT_COOLING_START, GetCurrentCoolingAssetTagByAGEHandle(DefaultCoolHandle), Remaining, Duration);
+				ExecCoolingUpdateNotifyEvent(TAG_EVENT_COOLING_START, GetCurrentCoolingAssetTagByAGEHandle(DefaultCoolHandle), Remaining, Duration);
 			}
 		}
 	}
@@ -156,7 +156,7 @@ void UGA_SharedCoolingBase::ApplySharedCooldown(const FGameplayAbilitySpecHandle
 				}
 			}
 		}
-		//They are not restricted(ÏÞÖÆ) by shared cooling.
+		//They are not restricted(é™åˆ¶) by shared cooling.
 		if (bSelfActivateDontSharedCoolDefaultConfig)
 		{
 			bSelfDontSharedCoolRuningSwitch = true;
@@ -169,22 +169,12 @@ void UGA_SharedCoolingBase::ApplySharedCooldown(const FGameplayAbilitySpecHandle
 	}
 }
 
-void UGA_SharedCoolingBase::Client_UpdateCoolingWidget_Implementation(FGameplayTag StatusTag,FGameplayTag CoolingAssetTag,float Remaining, float Duration) const
-{
-	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-	if (AbilitySystemComponent)
-	{
-		FGameplayEventData GameplayEventData;
-		GameplayEventData.OptionalObject = USharedCoolingInfoObject::GenerateSharedCoolingInfoObject(GetCurrentAbilitySpecHandle(), CoolingAssetTag,Remaining, Duration);
-		FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
-		AbilitySystemComponent->HandleGameplayEvent(StatusTag, &GameplayEventData);
-	}
-}
-
 void UGA_SharedCoolingBase::RefreshSharedCoolAbilityTime(FGameplayAbilitySpecHandle InstigatorHandle /*= FGameplayAbilitySpecHandle()*/)
 {
 	float Duration;
 	float Remaining;
+	FGameplayTag Tag;
+
 	if (bSelfActivateDontSharedCoolDefaultConfig && InstigatorHandle.IsValid())
 	{
 		if (InstigatorHandle != GetCurrentAbilitySpecHandle())
@@ -194,13 +184,48 @@ void UGA_SharedCoolingBase::RefreshSharedCoolAbilityTime(FGameplayAbilitySpecHan
 	}
 
 	RegisterCoolTimeGERemoveCallback();
-	
-	GetCooldownTimeRemainingAndDuration(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), Remaining, Duration);
+
+	GetCooldownTimeRemainingAndDurationAndTag(Tag, Remaining, Duration);
 	if (Remaining > 0.f && Duration > 0.f)
 	{
-		Client_UpdateCoolingWidget(TAG_EVENT_COOLING_START, GetCurrentCoolingAssetTagByAGEHandle(MaxRemainingCoolTimeAGEHandle), Remaining, Duration);
+		ExecCoolingUpdateNotifyEvent(TAG_EVENT_COOLING_START, Tag/*GetCurrentCoolingAssetTagByAGEHandle(MaxRemainingCoolTimeAGEHandle)*/, Remaining, Duration);
 	}
 }
+
+void UGA_SharedCoolingBase::ExecCoolingUpdateNotifyEvent(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration) const
+{
+	if (EventNotifyPlicy == EEventNotifyPlicy::OnlyClient)
+	{
+		Client_SendCoolingUpdateNotifyEvent(EventTag, CoolingAssetTag, Remaining, Duration);
+	}
+	else if (EventNotifyPlicy == EEventNotifyPlicy::OnlyServer)
+	{
+		SendCoolingUpdateNotifyEvent(EventTag, CoolingAssetTag, Remaining, Duration);
+	}
+	else
+	{
+		SendCoolingUpdateNotifyEvent(EventTag, CoolingAssetTag, Remaining, Duration);
+		Client_SendCoolingUpdateNotifyEvent(EventTag, CoolingAssetTag, Remaining, Duration);
+	}
+}
+
+void UGA_SharedCoolingBase::SendCoolingUpdateNotifyEvent(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration) const
+{
+	if (UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo())
+	{
+		FGameplayEventData GameplayEventData;
+		GameplayEventData.EventTag = EventTag;
+		GameplayEventData.OptionalObject = USharedCoolingInfoObject::GenerateSharedCoolingInfoObject(GetCurrentAbilitySpecHandle(), CoolingAssetTag, Remaining, Duration);
+		FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+		AbilitySystemComponent->HandleGameplayEvent(EventTag, &GameplayEventData);
+	}
+}
+
+void UGA_SharedCoolingBase::Client_SendCoolingUpdateNotifyEvent_Implementation(FGameplayTag EventTag, FGameplayTag CoolingAssetTag, float Remaining, float Duration) const
+{
+	SendCoolingUpdateNotifyEvent(EventTag, CoolingAssetTag, Remaining, Duration);
+}
+
 
 void UGA_SharedCoolingBase::RegisterCoolTimeGERemoveCallback() const
 {
@@ -218,7 +243,7 @@ void UGA_SharedCoolingBase::RegisterCoolTimeGERemoveCallback() const
 		{
 			MaxRemainingCoolTime_RemoveDelegate = NewActiveSharedCoold_Remove->AddWeakLambda(const_cast<UGA_SharedCoolingBase*>(this), [&](const FGameplayEffectRemovalInfo& InGameplayEffectRemovalInfo)
 				{
-					Client_UpdateCoolingWidget(TAG_EVENT_COOLING_END, GetCurrentCoolingAssetTagByAGEHandle(MaxRemainingCoolTimeAGEHandle), 0.f, 0.f);
+					ExecCoolingUpdateNotifyEvent(TAG_EVENT_COOLING_END, GetCurrentCoolingAssetTagByAGEHandle(MaxRemainingCoolTimeAGEHandle), 0.f, 0.f);
 				});
 		}
 	}

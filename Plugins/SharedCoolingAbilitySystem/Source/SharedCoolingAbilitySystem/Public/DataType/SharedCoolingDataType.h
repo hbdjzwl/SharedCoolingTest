@@ -8,26 +8,34 @@
 #include "GameplayTagsManager.h"
 #include "SharedCoolingDataType.generated.h"
 
-#define TAG_EVENT_COOLING_START  FGameplayTag::RequestGameplayTag("Event.Cooling.Start")		//ÀäÈ´¿ªÊ¼
-#define TAG_EVENT_COOLING_END    FGameplayTag::RequestGameplayTag("Event.Cooling.End")		//ÀäÈ´½áÊø
+#define TAG_EVENT_COOLING_START  FGameplayTag::RequestGameplayTag("Event.Cooling.Start")		//å†·å´å¼€å§‹
+#define TAG_EVENT_COOLING_END    FGameplayTag::RequestGameplayTag("Event.Cooling.End")		//å†·å´ç»“æŸ
 
+
+UENUM(BlueprintType)
+enum class EEventNotifyPlicy : uint8 
+{
+    OnlyClient        UMETA(DisplayName = "åªé€šçŸ¥å®¢æˆ·ç«¯"),
+    OnlyServer        UMETA(DisplayName = "åªé€šçŸ¥æœåŠ¡ç«¯"),
+	AllBoth			  UMETA(DisplayName = "æœåŠ¡å•ä¸æœåŠ¡ç«¯"),
+};
 USTRUCT(BlueprintType)
 struct SHAREDCOOLINGABILITYSYSTEM_API FSharedCoolingInfo
 {
 	GENERATED_BODY()
 public:
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "SharedCooling")
 		FGameplayAbilitySpecHandle GASpecHandle;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "SharedCooling")
 		FGameplayTag CoolingAssetTag;
 
-	UPROPERTY(BlueprintReadOnly)
-		float Remaining;
+	UPROPERTY(BlueprintReadOnly, Category = "SharedCooling")
+		float Remaining = 0.f;
 
-	UPROPERTY(BlueprintReadOnly)
-		float Duration;
+	UPROPERTY(BlueprintReadOnly, Category = "SharedCooling")
+		float Duration = 0.f;
 };
 
 UCLASS(BlueprintType)
@@ -38,18 +46,18 @@ public:
 	static USharedCoolingInfoObject* GenerateSharedCoolingInfoObject(FGameplayAbilitySpecHandle InGASpecHandle, FGameplayTag InCoolingAssetTag, float InRemaining, float InDuration);
 
 	void SetSharedCoolingInfo(FGameplayAbilitySpecHandle InGASpecHandle, FGameplayTag InCoolingTag, float InRemaining, float InDuration);
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "SharedCooling")
 	FSharedCoolingInfo GetSharedCoolingInfo() const;
 private:
 	FSharedCoolingInfo SharedCoolingInfo;
 };
 
-
+//Register Add tag
 struct SHAREDCOOLINGABILITYSYSTEM_API FSharedCoolingNativeTags : public FGameplayTagNativeAdder
 {
 	/*
-		ÓĞĞ©²»Ï²»¶ÓÃFGameplayTag::RequestGameplayTagÈ¥·ÃÎÊTag¡£
-		ËùÒÔÌá¹©Ö±½Ó·½Ê½·ÃÎÊ:
+		æœ‰äº›ä¸å–œæ¬¢ç”¨FGameplayTag::RequestGameplayTagå»è®¿é—®Tagã€‚
+		æ‰€ä»¥æä¾›ç›´æ¥æ–¹å¼è®¿é—®:
 			FSharedCoolingNativeTags::Get().CoolingStart
 			FSharedCoolingNativeTags::Get().CoolingEnd
 	*/
@@ -68,3 +76,4 @@ struct SHAREDCOOLINGABILITYSYSTEM_API FSharedCoolingNativeTags : public FGamepla
 private:
 	static FSharedCoolingNativeTags NativeTags;
 };
+
