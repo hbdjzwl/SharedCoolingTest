@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FSharedCoolingAbilitySystemModule : public IModuleInterface
+class FSharedCoolingAbilityModule : public IModuleInterface
 {
 public:
 

@@ -10,12 +10,12 @@
 #include "SharedCoolingSystemInterface.generated.h"
 
 UINTERFACE(MinimalAPI, meta = (CannotImplementInterfaceInBlueprint))
-class USharedCoolingSystemInterface : public UInterface
+class USharedCoolingInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class SHAREDCOOLINGABILITYSYSTEM_API ISharedCoolingSystemInterface
+class SHAREDCOOLINGABILITYSYSTEM_API ISharedCoolingInterface
 {
 	GENERATED_BODY()
 

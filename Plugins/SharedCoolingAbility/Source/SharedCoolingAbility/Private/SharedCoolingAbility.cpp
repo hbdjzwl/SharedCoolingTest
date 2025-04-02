@@ -1,15 +1,15 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SharedCoolingAbilitySystem.h"
+#include "SharedCoolingAbility.h"
 
-#define LOCTEXT_NAMESPACE "FSharedCoolingAbilitySystemModule"
+#define LOCTEXT_NAMESPACE "FSharedCoolingAbilityModule"
 
-void FSharedCoolingAbilitySystemModule::StartupModule()
+void FSharedCoolingAbilityModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }
 
-void FSharedCoolingAbilitySystemModule::ShutdownModule()
+void FSharedCoolingAbilityModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -17,4 +17,4 @@ void FSharedCoolingAbilitySystemModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FSharedCoolingAbilitySystemModule, SharedCoolingAbilitySystem)
+IMPLEMENT_MODULE(FSharedCoolingAbilityModule, SharedCoolingAbility)

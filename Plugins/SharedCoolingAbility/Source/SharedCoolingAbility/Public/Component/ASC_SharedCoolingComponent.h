@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "Interface/SharedCoolingSystemInterface.h"
+#include "Interface/SharedCoolingInterface.h"
 #include "ASC_SharedCoolingComponent.generated.h"
 
 /**
@@ -13,7 +13,7 @@
  * If you want to customize AbilitySystemComponent, please be sure to inherit from ISharedCoolingSystemInterface.
  */
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UASC_SharedCoolingComponent : public UAbilitySystemComponent,public ISharedCoolingSystemInterface
+class SHAREDCOOLINGABILITYSYSTEM_API UASC_SharedCoolingComponent : public UAbilitySystemComponent,public ISharedCoolingInterface
 {
 	GENERATED_BODY()
 public:

@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class SharedCoolingAbilitySystem : ModuleRules
+public class SharedCoolingAbility : ModuleRules
 {
-	public SharedCoolingAbilitySystem(ReadOnlyTargetRules Target) : base(Target)
+	public SharedCoolingAbility(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
