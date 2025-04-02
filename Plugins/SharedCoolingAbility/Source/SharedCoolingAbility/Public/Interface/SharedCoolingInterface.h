@@ -7,7 +7,7 @@
 
 #include "GameplayAbilitySpec.h"
 
-#include "SharedCoolingSystemInterface.generated.h"
+#include "SharedCoolingInterface.generated.h"
 
 UINTERFACE(MinimalAPI, meta = (CannotImplementInterfaceInBlueprint))
 class USharedCoolingInterface : public UInterface
@@ -15,7 +15,7 @@ class USharedCoolingInterface : public UInterface
 	GENERATED_BODY()
 };
 
-class SHAREDCOOLINGABILITYSYSTEM_API ISharedCoolingInterface
+class SHAREDCOOLINGABILITY_API ISharedCoolingInterface
 {
 	GENERATED_BODY()
 

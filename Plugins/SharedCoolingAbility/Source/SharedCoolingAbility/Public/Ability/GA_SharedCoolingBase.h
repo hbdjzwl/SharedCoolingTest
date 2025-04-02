@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "Interface/SharedCoolingSystemInterface.h"
+#include "Interface/SharedCoolingInterface.h"
 #include "DataType/SharedCoolingDataType.h"
 #include "GA_SharedCoolingBase.generated.h"
 
 
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UGA_SharedCoolingBase : public UGameplayAbility
+class SHAREDCOOLINGABILITY_API UGA_SharedCoolingBase : public UGameplayAbility
 {
 	GENERATED_BODY()
-	friend void ISharedCoolingSystemInterface::NotifyAllSharedAbilityRefreshCoolTime(FGameplayTagContainer , FGameplayAbilitySpecHandle);
+	friend void ISharedCoolingInterface::NotifyAllSharedAbilityRefreshCoolTime(FGameplayTagContainer , FGameplayAbilitySpecHandle);
 public:
 	UGA_SharedCoolingBase();
 

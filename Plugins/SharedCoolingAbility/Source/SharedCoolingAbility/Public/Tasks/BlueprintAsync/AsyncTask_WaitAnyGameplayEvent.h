@@ -10,7 +10,7 @@
  * 
  */
  UCLASS()
- class SHAREDCOOLINGABILITYSYSTEM_API UAbilityAsync_WaitAnyGameplayEvent : public UAbilityAsync
+ class SHAREDCOOLINGABILITY_API UAbilityAsync_WaitAnyGameplayEvent : public UAbilityAsync
  {
 	 GENERATED_BODY()
 public:

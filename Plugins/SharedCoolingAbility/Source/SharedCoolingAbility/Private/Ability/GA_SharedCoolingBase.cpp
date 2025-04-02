@@ -2,7 +2,7 @@
 
 
 #include "Ability/GA_SharedCoolingBase.h"
-#include "Interface/SharedCoolingSystemInterface.h"
+#include "Interface/SharedCoolingInterface.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect/GE_SharedCooling.h"
 
@@ -16,8 +16,8 @@ UGA_SharedCoolingBase::UGA_SharedCoolingBase()
 
 void UGA_SharedCoolingBase::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	ISharedCoolingSystemInterface* SharedCoolingSystem = Cast<ISharedCoolingSystemInterface>(ActorInfo->AbilitySystemComponent);
-	check(SharedCoolingSystem && "AbilitySystemComponent must be inherited from the ISharedCoolingSystemInterface class.");
+	ISharedCoolingInterface* SharedCoolingSystem = Cast<ISharedCoolingInterface>(ActorInfo->AbilitySystemComponent);
+	check(SharedCoolingSystem && "AbilitySystemComponent must be inherited from the ISharedCoolingInterface class.");
 
 	if (bEnableSharedCooling && SharedCoolingTime.Num() > 0)
 	{
@@ -41,7 +41,7 @@ void UGA_SharedCoolingBase::OnAvatarSet(const FGameplayAbilityActorInfo* ActorIn
 
 void UGA_SharedCoolingBase::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	ISharedCoolingSystemInterface* SharedCoolingSystem = Cast<ISharedCoolingSystemInterface>(ActorInfo->AbilitySystemComponent);
+	ISharedCoolingInterface* SharedCoolingSystem = Cast<ISharedCoolingInterface>(ActorInfo->AbilitySystemComponent);
 	check(SharedCoolingSystem && "AbilitySystemComponent must be inherited from the ISharedCoolingSystemInterface class.");
 
 	if (bEnableSharedCooling && ValidSharedCoolingTag.IsValid())
@@ -119,7 +119,7 @@ void UGA_SharedCoolingBase::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 void UGA_SharedCoolingBase::ApplySharedCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	//shared cooling skill
-	if (ISharedCoolingSystemInterface* SharedCoolingSystem = Cast<ISharedCoolingSystemInterface>(ActorInfo->AbilitySystemComponent.Get()))
+	if (ISharedCoolingInterface* SharedCoolingSystem = Cast<ISharedCoolingInterface>(ActorInfo->AbilitySystemComponent.Get()))
 	{
 		for (TArray<FGameplayTag>::TConstIterator TagIte = ValidSharedCoolingTag.CreateConstIterator(); TagIte; TagIte++)
 		{

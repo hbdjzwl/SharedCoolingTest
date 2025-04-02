@@ -17,7 +17,7 @@ public class SharedCoolingTest : ModuleRules
  			"GameplayTags",
  			"GameplayTasks",
  			"GameplayAbilities",
-            "SharedCoolingAbilitySystem",
+            "SharedCoolingAbility",
         });
 	}
 }

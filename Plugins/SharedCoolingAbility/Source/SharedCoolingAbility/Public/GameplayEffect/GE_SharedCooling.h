@@ -10,7 +10,7 @@
  * The GameplayEffect class is used for the shared cooldown of UGA_SharedCoolingBase.
  */
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UGE_SharedCooling : public UGameplayEffect
+class SHAREDCOOLINGABILITY_API UGE_SharedCooling : public UGameplayEffect
 {
 	GENERATED_BODY()
 public:

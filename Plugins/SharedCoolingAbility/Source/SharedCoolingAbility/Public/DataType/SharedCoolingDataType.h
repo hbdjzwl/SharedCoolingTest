@@ -20,7 +20,7 @@ enum class EEventNotifyPlicy : uint8
 	AllBoth			  UMETA(DisplayName = "服务单与服务端"),
 };
 USTRUCT(BlueprintType)
-struct SHAREDCOOLINGABILITYSYSTEM_API FSharedCoolingInfo
+struct SHAREDCOOLINGABILITY_API FSharedCoolingInfo
 {
 	GENERATED_BODY()
 public:
@@ -53,7 +53,7 @@ private:
 };
 
 //Register Add tag
-struct SHAREDCOOLINGABILITYSYSTEM_API FSharedCoolingNativeTags : public FGameplayTagNativeAdder
+struct SHAREDCOOLINGABILITY_API FSharedCoolingNativeTags : public FGameplayTagNativeAdder
 {
 	/*
 		有些不喜欢用FGameplayTag::RequestGameplayTag去访问Tag。

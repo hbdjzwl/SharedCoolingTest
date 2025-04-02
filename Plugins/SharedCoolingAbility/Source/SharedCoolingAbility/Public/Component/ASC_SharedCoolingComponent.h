@@ -13,7 +13,7 @@
  * If you want to customize AbilitySystemComponent, please be sure to inherit from ISharedCoolingSystemInterface.
  */
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UASC_SharedCoolingComponent : public UAbilitySystemComponent,public ISharedCoolingInterface
+class SHAREDCOOLINGABILITY_API UASC_SharedCoolingComponent : public UAbilitySystemComponent,public ISharedCoolingInterface
 {
 	GENERATED_BODY()
 public:

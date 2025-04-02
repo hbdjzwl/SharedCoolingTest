@@ -12,7 +12,7 @@ class UAbilitySystemComponent;
 
 
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UAbilityTask_WaitAnyGameplayEvent : public UAbilityTask
+class SHAREDCOOLINGABILITY_API UAbilityTask_WaitAnyGameplayEvent : public UAbilityTask
 {
 	GENERATED_BODY()
 public:

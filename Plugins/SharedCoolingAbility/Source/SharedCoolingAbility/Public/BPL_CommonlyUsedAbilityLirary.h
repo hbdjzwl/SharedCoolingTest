@@ -9,7 +9,7 @@
 #include "BPL_CommonlyUsedAbilityLirary.generated.h"
 
 UCLASS()
-class SHAREDCOOLINGABILITYSYSTEM_API UBPL_CommonlyUsedAbilityLirary : public UBlueprintFunctionLibrary
+class SHAREDCOOLINGABILITY_API UBPL_CommonlyUsedAbilityLirary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
