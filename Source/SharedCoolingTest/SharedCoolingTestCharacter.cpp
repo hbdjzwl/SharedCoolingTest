@@ -67,7 +67,10 @@ ASharedCoolingTestCharacter::ASharedCoolingTestCharacter()
 void ASharedCoolingTestCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
