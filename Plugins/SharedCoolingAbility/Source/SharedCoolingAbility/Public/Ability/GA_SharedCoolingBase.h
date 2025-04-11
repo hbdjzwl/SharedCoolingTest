@@ -45,7 +45,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "SharedCooling", meta = (AllowPrivateAccess = "true",EditCondition = "bEnableSharedCooling"))
 	EEventNotifyPlicy EventNotifyPlicy;
 
-	/* Use "Replicated" to support local forecasting */
+	/* Use "Replicated" to support "LocalPredicted" */
 	UPROPERTY(Replicated)
 	mutable bool bSelfDontSharedCoolRuningSwitch;
 	mutable FActiveGameplayEffectHandle MaxRemainingCoolTimeAGEHandle;
