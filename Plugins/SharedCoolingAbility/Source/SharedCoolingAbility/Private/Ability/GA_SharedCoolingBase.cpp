@@ -5,6 +5,7 @@
 #include "Interface/SharedCoolingInterface.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect/GE_SharedCooling.h"
+#include "Net/UnrealNetwork.h"
 
 UGA_SharedCoolingBase::UGA_SharedCoolingBase()
 {
@@ -136,7 +137,6 @@ void UGA_SharedCoolingBase::ApplySharedCooldown(const FGameplayAbilitySpecHandle
 						Spec->DynamicGrantedTags.AddTag(*TagIte);
 #if ENGINE_MAJOR_VERSION == 5 
 						Spec->AddDynamicAssetTag(*TagIte);
-
 #else
 						Spec->DynamicAssetTags.AddTag(*TagIte);
 #endif
@@ -295,4 +295,10 @@ void UGA_SharedCoolingBase::GetCooldownTimeRemainingAndDurationAndTag(FGameplayT
 {
 	CoolingAssetTag = GetCurrentCoolingAssetTagByAGEHandle(MaxRemainingCoolTimeAGEHandle);
 	GetCooldownTimeRemainingAndDuration(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), TimeRemaining, CooldownDuration);
+}
+
+void UGA_SharedCoolingBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UGA_SharedCoolingBase, bSelfDontSharedCoolRuningSwitch);
 }
