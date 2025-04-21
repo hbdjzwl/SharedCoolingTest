@@ -8,6 +8,13 @@
 #include "GameplayAbilitySpec.h"
 #include "BPL_CommonlyUsedAbilityLirary.generated.h"
 
+UENUM(BlueprintType)
+enum class ETagsQueryCondition : uint8
+{
+	MatchAny        UMETA(DisplayName = "满足任意标签"),
+	MatchAll        UMETA(DisplayName = "满足所有标签"),
+};
+
 UCLASS()
 class SHAREDCOOLINGABILITY_API UBPL_CommonlyUsedAbilityLirary : public UBlueprintFunctionLibrary
 {
@@ -39,7 +46,7 @@ public:
 	static void ModifyGameplayEffectRemainingTimeByHandle(UAbilitySystemComponent* AbilitySystemComponent, const FActiveGameplayEffectHandle& AGEHandle, float ModifiedIncrement);
 
 	UFUNCTION( BlueprintCallable , meta=(DisplayName="ModifyGameplayEffectRemainingTimeByTags" ) , Category = "BPL_CommonlyUsedAbilityLirary")
-	static void ModifyGameplayEffectRemainingTimeByTags(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tags, float ModifiedIncrement);
+	static void ModifyGameplayEffectRemainingTimeByTags(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tags, float ModifiedIncrement, ETagsQueryCondition TagsQueryCondition);
 
 	UFUNCTION( BlueprintPure , meta=(DisplayName="GetGameplayEffectDuration" ) , Category = "BPL_CommonlyUsedAbilityLirary")
 	static float GetGameplayEffectDuration(UAbilitySystemComponent* AbilitySystemComponent, const FActiveGameplayEffectHandle& Handle);
@@ -60,3 +67,4 @@ public:
 	static UGameplayAbility* GetPrimaryAbilityInstanceFromHandle(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAbilitySpecHandle& Handle);
 
 };
+

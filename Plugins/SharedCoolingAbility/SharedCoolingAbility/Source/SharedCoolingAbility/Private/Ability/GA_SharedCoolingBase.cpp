@@ -137,6 +137,7 @@ void UGA_SharedCoolingBase::ApplySharedCooldown(const FGameplayAbilitySpecHandle
 						Spec->DynamicGrantedTags.AddTag(*TagIte);
 #if ENGINE_MAJOR_VERSION == 5 
 						Spec->AddDynamicAssetTag(*TagIte);
+
 #else
 						Spec->DynamicAssetTags.AddTag(*TagIte);
 #endif

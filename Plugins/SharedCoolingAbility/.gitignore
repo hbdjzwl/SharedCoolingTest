@@ -1,8 +1,8 @@
 .vs/
 .svn/
 .git/
-.github
 .vsconfig
+*.sln
 
 Binaries/
 Build/
@@ -11,4 +11,3 @@ Saved/
 WindowsNoEditor/
 DerivedDataCache/
 
-*.sln

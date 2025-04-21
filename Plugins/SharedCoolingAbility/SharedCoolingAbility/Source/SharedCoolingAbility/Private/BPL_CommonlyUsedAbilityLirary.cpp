@@ -75,11 +75,20 @@ void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByHandle(U
 	}
 }
 
-void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByTags(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tags, float ModifiedIncrement)
+void UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByTags(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tags, float ModifiedIncrement, ETagsQueryCondition TagsQueryCondition)
 {
 	if (AbilitySystemComponent && Tags.IsValid())
 	{
-		TArray<FActiveGameplayEffectHandle> AllAGEHandle = AbilitySystemComponent->GetActiveEffectsWithAllTags(Tags);
+		switch (TagsQueryCondition)
+		{
+		case ETagsQueryCondition::MatchAny:
+			break;
+		case ETagsQueryCondition::MatchAll:
+			break;
+		}
+		TArray<FActiveGameplayEffectHandle> AllAGEHandle = AbilitySystemComponent->GetActiveEffects(
+		TagsQueryCondition == ETagsQueryCondition::MatchAny ? FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(Tags) : FGameplayEffectQuery::MakeQuery_MatchAllEffectTags(Tags)
+		);
 		for (const auto& Handle : AllAGEHandle)
 		{
 			UBPL_CommonlyUsedAbilityLirary::ModifyGameplayEffectRemainingTimeByHandle(AbilitySystemComponent, Handle, ModifiedIncrement);
